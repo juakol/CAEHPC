@@ -1,14 +1,18 @@
 try{
+    //Gauge meters objects
     var oCaeAdm1FreeNodesGm;
     var oCaeNas1Home15UsageGm;
     var oCaeNas1Home15AwaitingTimeGm;
 
+    //Chart objects
     var oCaeNas1Home15PerformanceChart;
 
+    //Some basic colors
     var _green = "#a9d70b";
     var _yellow ="#f9c802";
     var _red = "#ff0000";
 
+    //Default options for gauge meters
     var dfltOpts ={
         min: 0,
         pointer: true,
@@ -29,7 +33,7 @@ try{
     $(document).ready(function(){
         try{
             oCaeAdm1FreeNodesGm = new JustGage({
-                id: 'cae-adm1-check-free-nodes',
+                id: 'cae-adm1-check-free-nodes-gm',
                 name :'oCaeAdm1freeNodesGm',
                 title: 'free nodes',
                 max: 90,
@@ -51,7 +55,7 @@ try{
             });
 
             oCaeNas1Home15UsageGm = new JustGage({
-                id: 'cae-nas1-check-home15-usage',
+                id: 'cae-nas1-check-home15-usage-gm',
                 title: 'home15 usage',
                 max: 100,
                 symbol: '%',
@@ -73,7 +77,7 @@ try{
             });
 
             oCaeNas1Home15AwaitingTimeGm = new JustGage({
-                id: 'cae-nas1-check-home15-awaiting-time',
+                id: 'cae-nas1-check-home15-awaiting-time-gm',
                 title: 'home15 awaiting time',
                 max: 10,
                 symbol: ' ms',
@@ -90,7 +94,7 @@ try{
                   defaults: dfltOpts
               });
 
-            AmCharts.makeChart("cae-nas1-home15-performance",{
+            oCaeNas1Home15PerformanceChart = AmCharts.makeChart("cae-nas1-home15-performance-chart",{
                 "type": "serial",
                 "categoryField": "date",
                 "columnSpacing": 4,
@@ -115,7 +119,7 @@ try{
                         "lineThickness": 2,
                         "title": "Usage",
                         "valueAxis": "usage-axis",
-                        "valueField": "column-1",
+                        "valueField": "usage",
                         "yAxis": "usage-axis"
                     },
                     {
@@ -125,7 +129,7 @@ try{
                         "lineThickness": 2,
                         "title": "Awaiting time",
                         "valueAxis": "awaiting-time-axis",
-                        "valueField": "column-2",
+                        "valueField": "awaiting-time",
                         "yAxis": "awaiting-time-axis"
                     }
                 ],
@@ -165,66 +169,100 @@ try{
                         "text": "home15 performance"
                     }
                 ],
-                "dataProvider": [
-                    {
-                        "column-1": "2.79",
-                        "column-2": "93.50",
-                        "date": "14:58"
-                    },
-                    {
-                        "column-1": "20.73",
-                        "column-2": "99.70",
-                        "date": "14:59"
-                    },
-                    {
-                        "column-1": "2.93",
-                        "column-2": "98.60",
-                        "date": "15:00"
-                    },
-                    {
-                        "column-1": "5.98",
-                        "column-2": "99.30",
-                        "date": "15:01"
-                    },
-                    {
-                        "column-1": "2.63",
-                        "column-2": "99.50",
-                        "date": "15:02"
-                    },
-                    {
-                        "column-1": "3.53",
-                        "column-2": "99.90",
-                        "date": "15:03"
-                    },
-                    {
-                        "column-1": "2.42",
-                        "column-2": "100.00",
-                        "date": "15:04"
-                    },
-                    {
-                        "column-1": "5.82",
-                        "column-2": "99.50",
-                        "date": "15:05"
-                    },
-                    {
-                        "column-1": "14.39",
-                        "column-2": "100.00",
-                        "date": "15:06"
-                    },
-                    {
-                        "column-1": "3.88",
-                        "column-2": "100.00",
-                        "date": "15:07"
-                    }
-                ]
+                "dataProvider": initializeChartData()
+                // "dataProvider":
+                // [
+                //     {
+                //         "usage": "2.79",
+                //         "awaiting-time": "93.50",
+                //         "date": "14:58"
+                //     },
+                //     {
+                //         "usage": "20.73",
+                //         "awaiting-time": "99.70",
+                //         "date": "14:59"
+                //     },
+                //     {
+                //         "usage": "2.93",
+                //         "awaiting-time": "98.60",
+                //         "date": "15:00"
+                //     },
+                //     {
+                //         "usage": "5.98",
+                //         "awaiting-time": "99.30",
+                //         "date": "15:01"
+                //     },
+                //     {
+                //         "usage": "2.63",
+                //         "awaiting-time": "99.50",
+                //         "date": "15:02"
+                //     },
+                //     {
+                //         "usage": "3.53",
+                //         "awaiting-time": "99.90",
+                //         "date": "15:03"
+                //     },
+                //     {
+                //         "usage": "2.42",
+                //         "awaiting-time": "100.00",
+                //         "date": "15:04"
+                //     },
+                //     {
+                //         "usage": "5.82",
+                //         "awaiting-time": "99.50",
+                //         "date": "15:05"
+                //     },
+                //     {
+                //         "usage": "14.39",
+                //         "awaiting-time": "100.00",
+                //         "date": "15:06"
+                //     },
+                //     {
+                //         "usage": "3.88",
+                //         "awaiting-time": "100.00",
+                //         "date": "15:07"
+                //     }
+                // ]
             });
+            oCaeNas1Home15PerformanceChart.validateData();
+            //$("a[title='JavaScript charts']").hide();
 
             updateGm();
-
-            $("a[title='JavaScript charts']").hide();
         }
         catch(ex){console.log(ex.message);}
     });
+
+    function initializeChartData(){
+        try{
+            var chartData = [];
+            var oDate = new Date();
+            for (i=0;i<10;i++){
+                oDate.setMinutes(oDate.getMinutes()-1);
+                chartData.push({
+                    "usage": "0.00",
+                    "awaiting-time": "0.00",
+                    "date": oDate
+                });
+            }
+            return chartData;
+        }
+        catch(ex){console.log(ex.message);}
+    }
+
+    // function ajaxRequest(_logName){
+    //     try{
+    //         debugger;
+    //         var xhttp = new XMLHttpRequest();
+    //         xhttp.onreadystatechange = function(){
+    //             if (this.readyState == 4 && this.status == 200){
+    //                     return this.response;
+    //             }
+    //         }
+    //         xhttp.open("GET", "logs/"+ _logName, true);
+    //         xhttp.send();
+    //     }
+    //     catch(ex){console.log(ex.message);}
+    // }
 
     function setValue(_Gm, _logData){
         try
@@ -234,10 +272,10 @@ try{
                 switch(_Gm)
                 {
                     case "oCaeAdm1FreeNodesGm":
-                        _logData = _logData.match(/[0-9]+/g);
-                    
-                        iFreeNodes = _logData[0];
-                        iTotalNodes = _logData[1];
+                            _logData = _logData.match(/[0-9]+/g);
+                        
+                            iFreeNodes = _logData[0];
+                            iTotalNodes = _logData[1];
                         
                             window[_Gm].refresh(iFreeNodes, iTotalNodes);
                         break;
@@ -285,11 +323,13 @@ try{
             loadData("oCaeAdm1FreeNodesGm", "cae_adm1_check_free_nodes.htm");
             loadData("oCaeNas1Home15UsageGm", "cae_nas1_check_home15.htm");
             loadData("oCaeNas1Home15AwaitingTimeGm", "cae_nas1_check_home15.htm");
+            oCaeNas1Home15PerformanceChart.validateData();
+            //$("a[title='JavaScript charts']").hide();
         }
         catch(ex){console.log(ex.message);}
     }
 
-    setInterval(function(){updateGm();}, 3000);
+    //setInterval(function(){updateGm();}, 3000);
 }
 
 
