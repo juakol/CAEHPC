@@ -7,13 +7,16 @@ try{
     //Chart objects
     var oCaeNas1Home15PerformanceChart;
 
+    //Data providers
+    var oHome15PerformanceData = [];
+
     //Some basic colors
     var _green = "#a9d70b";
     var _yellow ="#f9c802";
     var _red = "#ff0000";
 
     //Default options for gauge meters
-    var dfltOpts ={
+    var dfltOpts = {
         min: 0,
         pointer: true,
         pointerOptions: {
@@ -169,100 +172,35 @@ try{
                         "text": "home15 performance"
                     }
                 ],
+                "initialized": false,
                 "dataProvider": initializeChartData()
-                // "dataProvider":
-                // [
-                //     {
-                //         "usage": "2.79",
-                //         "awaiting-time": "93.50",
-                //         "date": "14:58"
-                //     },
-                //     {
-                //         "usage": "20.73",
-                //         "awaiting-time": "99.70",
-                //         "date": "14:59"
-                //     },
-                //     {
-                //         "usage": "2.93",
-                //         "awaiting-time": "98.60",
-                //         "date": "15:00"
-                //     },
-                //     {
-                //         "usage": "5.98",
-                //         "awaiting-time": "99.30",
-                //         "date": "15:01"
-                //     },
-                //     {
-                //         "usage": "2.63",
-                //         "awaiting-time": "99.50",
-                //         "date": "15:02"
-                //     },
-                //     {
-                //         "usage": "3.53",
-                //         "awaiting-time": "99.90",
-                //         "date": "15:03"
-                //     },
-                //     {
-                //         "usage": "2.42",
-                //         "awaiting-time": "100.00",
-                //         "date": "15:04"
-                //     },
-                //     {
-                //         "usage": "5.82",
-                //         "awaiting-time": "99.50",
-                //         "date": "15:05"
-                //     },
-                //     {
-                //         "usage": "14.39",
-                //         "awaiting-time": "100.00",
-                //         "date": "15:06"
-                //     },
-                //     {
-                //         "usage": "3.88",
-                //         "awaiting-time": "100.00",
-                //         "date": "15:07"
-                //     }
-                // ]
             });
             oCaeNas1Home15PerformanceChart.validateData();
-            //$("a[title='JavaScript charts']").hide();
-
+            $("a[title='JavaScript charts']").hide();
             updateGm();
         }
         catch(ex){console.log(ex.message);}
     });
 
-    function initializeChartData(){
+    function initializeChartData(oDataProvider, iTimeInterval){
         try{
-            var chartData = [];
-            var oDate = new Date();
-            for (i=0;i<10;i++){
-                oDate.setMinutes(oDate.getMinutes()-1);
-                chartData.push({
-                    "usage": "0.00",
-                    "awaiting-time": "0.00",
-                    "date": oDate
+            var oDate = moment();
+            oHome15PerformanceData.unshift({
+                "usage": "",
+                "awaiting-time": "",
+                "date": oDate.format("HH:mm")
+            });
+            for (i=0;i<8;i++){
+                oDate.subtract(1,"minute");
+                oHome15PerformanceData.unshift({
+                    "usage": "",
+                    "awaiting-time": "",
+                    "date": oDate.format("HH:mm")
                 });
             }
-            return chartData;
         }
         catch(ex){console.log(ex.message);}
     }
-
-    // function ajaxRequest(_logName){
-    //     try{
-    //         debugger;
-    //         var xhttp = new XMLHttpRequest();
-    //         xhttp.onreadystatechange = function(){
-    //             if (this.readyState == 4 && this.status == 200){
-    //                     return this.response;
-    //             }
-    //         }
-    //         xhttp.open("GET", "logs/"+ _logName, true);
-    //         xhttp.send();
-    //     }
-    //     catch(ex){console.log(ex.message);}
-    // }
 
     function setValue(_Gm, _logData){
         try
@@ -272,34 +210,41 @@ try{
                 switch(_Gm)
                 {
                     case "oCaeAdm1FreeNodesGm":
-                            _logData = _logData.match(/[0-9]+/g);
-                        
-                            iFreeNodes = _logData[0];
-                            iTotalNodes = _logData[1];
-                        
-                            window[_Gm].refresh(iFreeNodes, iTotalNodes);
-                        break;
+                        _logData = _logData.match(/[0-9]+/g);
+                        iFreeNodes = _logData[0];
+                        iTotalNodes = _logData[1];
+                    
+                        window[_Gm].refresh(iFreeNodes, iTotalNodes);
+                    break;
 
-                        case "oCaeNas1Home15UsageGm":
-                                _logData =_logData.match(/[0-9]+\.[0-9]{2}/g);
-                                window[_Gm].refresh(parseFloat(_logData[1]));
-                        break;
+                    case "oCaeNas1Home15UsageGm":
+                        _logData =_logData.match(/[0-9]+\.[0-9]{2}/g);
+                        window[_Gm].refresh(parseFloat(_logData[1]));
+                    break;
 
-                        case "oCaeNas1Home15AwaitingTimeGm":
-                                _logData =_logData.match(/[0-9]+\.[0-9]{2}/g);
-                                if(parseFloat(_logData)>10){
-                                    window[_Gm].refresh(parseFloat(_logData[0]), Math.floor(parseFloat(_logData)+1));
-                                }
-                                else{
-                                    window[_Gm].refresh(parseFloat(_logData[0]), 10);
-                                }
-                        break;
-                    }
-                }
-                else{
-                    window[_Gm].refresh("NaN");
+                    case "oCaeNas1Home15AwaitingTimeGm":
+                        _logData =_logData.match(/[0-9]+\.[0-9]{2}/g);
+                        if(parseFloat(_logData)>10){
+                            window[_Gm].refresh(parseFloat(_logData[0]), Math.floor(parseFloat(_logData)+1));
+                        }
+                        else{
+                            window[_Gm].refresh(parseFloat(_logData[0]), 10);
+                        }
+                    break;
+
+                    case "oCaeNas1Home15PerformanceChart":
+                        var _perfData = _logData.match(/[0-9]{2}:[0-9]{2}/g);
+                        var _awaitingTime = _perfData[0];
+                        var _usage = _perfData[1];
+
+                        window[_Gm].dataProvider.pop();
+                    break;
                 }
             }
+            else{
+                window[_Gm].refresh("NaN");
+            }
+        }
         catch(ex){console.log(ex.message);}
     }
 
@@ -323,8 +268,9 @@ try{
             loadData("oCaeAdm1FreeNodesGm", "cae_adm1_check_free_nodes.htm");
             loadData("oCaeNas1Home15UsageGm", "cae_nas1_check_home15.htm");
             loadData("oCaeNas1Home15AwaitingTimeGm", "cae_nas1_check_home15.htm");
-            oCaeNas1Home15PerformanceChart.validateData();
-            //$("a[title='JavaScript charts']").hide();
+            loadData("oCaeNas1Home15PerformanceChart", "cae_nas1_check_home15.htm");
+            //oCaeNas1Home15PerformanceChart.validateData();
+            $("a[title='JavaScript charts']").hide();
         }
         catch(ex){console.log(ex.message);}
     }
