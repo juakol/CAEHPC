@@ -184,13 +184,14 @@ try{
 
     function initializeChartData(oDataProvider, iTimeInterval){
         try{
+            var oHome15PerformanceData = [];
             var oDate = moment();
             oHome15PerformanceData.unshift({
                 "usage": "",
                 "awaiting-time": "",
                 "date": oDate.format("HH:mm")
             });
-            for (i=0;i<8;i++){
+            for (i=0;i<10;i++){
                 oDate.subtract(1,"minute");
                 oHome15PerformanceData.unshift({
                     "usage": "",
@@ -198,63 +199,73 @@ try{
                     "date": oDate.format("HH:mm")
                 });
             }
+            
+            return oHome15PerformanceData;
         }
         catch(ex){console.log(ex.message);}
     }
 
-    function setValue(_Gm, _logData){
+    function setValue(_oWidget, _logData){
         try
         {
             if (_logData.match(/Error|Unknown|not defined/i)===null)
             {
-                switch(_Gm)
+                switch(_oWidget)
                 {
                     case "oCaeAdm1FreeNodesGm":
                         _logData = _logData.match(/[0-9]+/g);
                         iFreeNodes = _logData[0];
                         iTotalNodes = _logData[1];
                     
-                        window[_Gm].refresh(iFreeNodes, iTotalNodes);
+                        window[_oWidget].refresh(iFreeNodes, iTotalNodes);
                     break;
 
                     case "oCaeNas1Home15UsageGm":
                         _logData =_logData.match(/[0-9]+\.[0-9]{2}/g);
-                        window[_Gm].refresh(parseFloat(_logData[1]));
+                        window[_oWidget].refresh(parseFloat(_logData[1]));
                     break;
 
                     case "oCaeNas1Home15AwaitingTimeGm":
                         _logData =_logData.match(/[0-9]+\.[0-9]{2}/g);
                         if(parseFloat(_logData)>10){
-                            window[_Gm].refresh(parseFloat(_logData[0]), Math.floor(parseFloat(_logData)+1));
+                            window[_oWidget].refresh(parseFloat(_logData[0]), Math.floor(parseFloat(_logData)+1));
                         }
                         else{
-                            window[_Gm].refresh(parseFloat(_logData[0]), 10);
+                            window[_oWidget].refresh(parseFloat(_logData[0]), 10);
                         }
                     break;
 
                     case "oCaeNas1Home15PerformanceChart":
-                        var _perfData = _logData.match(/[0-9]{2}:[0-9]{2}/g);
+                        var _perfData = _logData.match(/[0-9]+\.[0-9]{2}/g);
                         var _awaitingTime = _perfData[0];
                         var _usage = _perfData[1];
-
-                        window[_Gm].dataProvider.pop();
+                        var oDate = moment();
+                        debugger;
+                        window[_oWidget].dataProvider.shift();
+                        window[_oWidget].dataProvider.push({
+                            "usage": _usage,
+                            "awaiting-time": _awaitingTime,
+                            "date": oDate.format("HH:mm")
+                        });
+                        window[_oWidget].validateData();
+                        $("a[title='JavaScript charts']").hide();
                     break;
                 }
             }
             else{
-                window[_Gm].refresh("NaN");
+                window[_oWidget].refresh("NaN");
             }
         }
         catch(ex){console.log(ex.message);}
     }
 
-    function loadData(_Gm, _logName){
+    function loadData(_oWidget, _logName){
         try{
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     var _logData = this.responseText;
-                    setValue(_Gm, _logData);
+                    setValue(_oWidget, _logData);
                 }
             }
             xhttp.open("GET", "logs/"+ _logName, true);
@@ -269,13 +280,13 @@ try{
             loadData("oCaeNas1Home15UsageGm", "cae_nas1_check_home15.htm");
             loadData("oCaeNas1Home15AwaitingTimeGm", "cae_nas1_check_home15.htm");
             loadData("oCaeNas1Home15PerformanceChart", "cae_nas1_check_home15.htm");
-            //oCaeNas1Home15PerformanceChart.validateData();
+            oCaeNas1Home15PerformanceChart.validateData();
             $("a[title='JavaScript charts']").hide();
         }
         catch(ex){console.log(ex.message);}
     }
 
-    //setInterval(function(){updateGm();}, 3000);
+    setInterval(function(){updateGm();}, 40000);
 }
 
 

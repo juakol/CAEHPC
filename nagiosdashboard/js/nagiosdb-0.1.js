@@ -36,6 +36,7 @@ try{
 
     function initializeHome15Chart(_dataLog, iTimeInterval){
         try{
+            debugger;
             var _initialData;
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -68,6 +69,7 @@ try{
     function parseData(oData, oWidget){
         try{
             var oParsedData = new Array();
+            debugger;
             switch(_dataLog){
                 case "":
                     oParsedData.push({
@@ -165,16 +167,16 @@ try{
             loadData("oCaeAdm1FreeNodesGm", "cae_adm1_check_free_nodes.htm");
             loadData("oCaeNas1Home15UsageGm", "cae_nas1_check_home15.htm");
             loadData("oCaeNas1Home15AwaitingTimeGm", "cae_nas1_check_home15.htm");
-            loadData("oCaeNas1Home15PerformanceChart", "cae_nas1_check_home15.htm");
-            //oCaeNas1Home15PerformanceChart.validateData();
+            //loadData("oCaeNas1Home15PerformanceChart", "cae_nas1_check_home15.htm");
+            ///oCaeNas1Home15PerformanceChart.validateData();
             $("a[title='JavaScript charts']").hide();
         }
         catch(ex){console.log(ex.message);}
     }
     
-    function start(){
+    // function start(){
         setInterval(function(){update();}, 1000*60);
-    }
+    // }
 
     $(document).ready(function(){
         try{

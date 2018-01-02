@@ -4,12 +4,20 @@
 		"selected_items":
 		[
 			[
-				"br",
-				"break"
+				"ocae",
+				"oCaeNas1Home15AwaitingTimeGm"
+			],
+			[
+				"oCaeNas",
+				"oCaeNas1Home15UsageGm"
 			],
 			[
 				"oCa",
-				"oCaeNas1Home15PerformanceChart"
+				"oCaeAdm1freeNodesGm"
+			],
+			[
+				"br",
+				"break"
 			],
 			[
 				"h",
@@ -132,10 +140,6 @@
 				"padding-top"
 			],
 			[
-				"ocae",
-				"oCaeAdm1AvailableNodesGm"
-			],
-			[
 				"parse",
 				"parseFloat"
 			],
@@ -200,34 +204,38 @@
 			"settings":
 			{
 				"buffer_size": 1423,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "Package Control Messages\n========================\n\nLiveReload\n----------\n\n  Changelog:\n  \n  Please be sure to restart Sublime Text to start using this new version. For more information or how to use this plugin visit https://github.com/alepez/LiveReload-sublimetext3\n",
-			"settings":
-			{
-				"buffer_size": 267,
-				"line_ending": "Windows",
-				"name": "Package Control Messages",
-				"read_only": true,
-				"scratch": true
-			}
-		},
-		{
-			"file": "js/nagiosdb.js",
-			"settings":
-			{
-				"buffer_size": 9742,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "logs/cae_nas1_check_home15.htm",
+			"contents": "try{\n    //Gauge meters objects\n    var oCaeAdm1FreeNodesGm;\n    var oCaeNas1Home15UsageGm;\n    var oCaeNas1Home15AwaitingTimeGm;\n\n    //Chart objects\n    var oCaeNas1Home15PerformanceChart;\n\n    //Data providers\n    var oHome15PerformanceData = [];\n\n    //Some basic colors\n    var _green = \"#a9d70b\";\n    var _yellow =\"#f9c802\";\n    var _red = \"#ff0000\";\n\n    //Default options for gauge meters\n    var dfltOpts = {\n        min: 0,\n        pointer: true,\n        pointerOptions: {\n            value: 0,\n            toplength: -15,\n            bottomlength: 10,\n            bottomwidth: 12,\n            color: '#8e8e93',\n            stroke: '#ffffff',\n            stroke_width: 3,\n            stroke_linecap: 'round'\n        },\n        gaugeWidthScale: 0.8,\n        counter: false\n    }\n\n    $(document).ready(function(){\n        try{\n            oCaeAdm1FreeNodesGm = new JustGage({\n                id: 'cae-adm1-check-free-nodes-gm',\n                name :'oCaeAdm1freeNodesGm',\n                title: 'free nodes',\n                max: 90,\n                decimals: 0,\n                customSectors: [{\n                    color : _red,\n                    lo : 0,\n                    hi : 5\n                },{\n                    color : _yellow,\n                    lo : 6,\n                    hi : 10\n                },{\n                    color : _green,\n                    lo : 11,\n                    hi : 200\n                }],\n                defaults: dfltOpts\n            });\n\n            oCaeNas1Home15UsageGm = new JustGage({\n                id: 'cae-nas1-check-home15-usage-gm',\n                title: 'home15 usage',\n                max: 100,\n                symbol: '%',\n                decimals: 2,\n                customSectors: [{\n                    color : _green,\n                    lo : 0.00,\n                    hi : 98.99\n                  },{\n                    color : _yellow,\n                    lo : 99.00,\n                    hi : 99.99\n                  },{\n                    color : _red,\n                    lo : 100.00,\n                    hi : 100.00\n                  }],\n                  defaults: dfltOpts\n            });\n\n            oCaeNas1Home15AwaitingTimeGm = new JustGage({\n                id: 'cae-nas1-check-home15-awaiting-time-gm',\n                title: 'home15 awaiting time',\n                max: 10,\n                symbol: ' ms',\n                decimals: 2,\n                customSectors: [{\n                    color : _green,\n                    lo : 0.00,\n                    hi : 5.99\n                  },{\n                    color : _red,\n                    lo : 5.99,\n                    hi : 10.00\n                  }], \n                  defaults: dfltOpts\n              });\n\n            oCaeNas1Home15PerformanceChart = AmCharts.makeChart(\"cae-nas1-home15-performance-chart\",{\n                \"type\": \"serial\",\n                \"categoryField\": \"date\",\n                \"columnSpacing\": 4,\n                \"autoDisplay\": true,\n                \"dataDateFormat\": \"HH:NN\",\n                \"plotAreaFillAlphas\": 0.23,\n                \"colors\": [\n                    \"#88E537\",\n                    \"#70A5BF\"\n                ],\n                \"precision\": 2,\n                \"categoryAxis\": {\n                    \"minPeriod\": \"mm\",\n                    \"parseDates\": true,\n                    \"boldLabels\": true,\n                },\n                \"graphs\": [\n                    {\n                        \"bullet\": \"round\",\n                        \"bulletSize\": 10,\n                        \"id\": \"usage-graph\",\n                        \"lineThickness\": 2,\n                        \"title\": \"Usage\",\n                        \"valueAxis\": \"usage-axis\",\n                        \"valueField\": \"usage\",\n                        \"yAxis\": \"usage-axis\"\n                    },\n                    {\n                        \"bullet\": \"round\",\n                        \"bulletSize\": 10,\n                        \"id\": \"awaiting-time-graph\",\n                        \"lineThickness\": 2,\n                        \"title\": \"Awaiting time\",\n                        \"valueAxis\": \"awaiting-time-axis\",\n                        \"valueField\": \"awaiting-time\",\n                        \"yAxis\": \"awaiting-time-axis\"\n                    }\n                ],\n                \"valueAxes\": [\n                    {\n                        \"id\": \"usage-axis\",\n                        \"autoGridCount\": false,\n                        \"tickLength\": 3,\n                        \"title\": \"Usage\",\n                        \"titleFontSize\": 13,\n                        \"strictMinMax\": true,\n                        \"integersOnly\": true,\n                        \"unit\":\"%\",\n                        \"labelFrequency\": 2,\n                        \"gridCount\": 10\n\n                    },\n                    {\n                        \"id\": \"awaiting-time-axis\",\n                        \"position\": \"right\",\n                        \"title\": \"Awaiting time (ms)\",\n                        \"titleFontSize\": 13\n                    }\n                ],\n                \"balloon\": {\n                    \"animationDuration\": 0\n                },\n                \"legend\": {\n                    \"enabled\": true,\n                    \"useGraphSettings\": true,\n                    \"switchable\": false\n                },\n                \"titles\": [\n                    {\n                        \"id\": \"hom15-performance\",\n                        \"size\": 15,\n                        \"text\": \"home15 performance\"\n                    }\n                ],\n                \"initialized\": false,\n                \"dataProvider\": initializeChartData()\n            });\n            oCaeNas1Home15PerformanceChart.validateData();\n            $(\"a[title='JavaScript charts']\").hide();\n            updateGm();\n        }\n        catch(ex){console.log(ex.message);}\n    });\n\n    function initializeChartData(oDataProvider, iTimeInterval){\n        try{\n            var oDate = moment();\n            oHome15PerformanceData.unshift({\n                \"usage\": \"\",\n                \"awaiting-time\": \"\",\n                \"date\": oDate.format(\"HH:mm\")\n            });\n            for (i=0;i<8;i++){\n                oDate.subtract(1,\"minute\");\n                oHome15PerformanceData.unshift({\n                    \"usage\": \"\",\n                    \"awaiting-time\": \"\",\n                    \"date\": oDate.format(\"HH:mm\")\n                });\n            }\n        }\n        catch(ex){console.log(ex.message);}\n    }\n    function randomData(_oWidget){\n        try{\n            switch(_oWidget){\n                case \"oCaeAdm1freeNodesGm\"\n                    window[_oWidget].refresh(Math.floor(Math.random()*100)+1);\n                break;\n                case \"oCaeNas1Home15UsageGm\"\n\n                break;\n                case \"oCaeNas1Home15AwaitingTimeGm\"\n\n                break;\n            }\n\n        }\n       catch(ex){console.log(ex.message);}\n    }\n\n    function setValue(_Gm, _logData){\n        try\n        {\n            if (_logData.match(/Error|Unknown|not defined/i)===null)\n            {\n                switch(_Gm)\n                {\n                    case \"oCaeAdm1FreeNodesGm\":\n                        _logData = _logData.match(/[0-9]+/g);\n                        iFreeNodes = _logData[0];\n                        iTotalNodes = _logData[1];\n                    \n                        window[_Gm].refresh(iFreeNodes, iTotalNodes);\n                    break;\n\n                    case \"oCaeNas1Home15UsageGm\":\n                        _logData =_logData.match(/[0-9]+\\.[0-9]{2}/g);\n                        window[_Gm].refresh(parseFloat(_logData[1]));\n                    break;\n\n                    case \"oCaeNas1Home15AwaitingTimeGm\":\n                        _logData =_logData.match(/[0-9]+\\.[0-9]{2}/g);\n                        if(parseFloat(_logData)>10){\n                            window[_Gm].refresh(parseFloat(_logData[0]), Math.floor(parseFloat(_logData)+1));\n                        }\n                        else{\n                            window[_Gm].refresh(parseFloat(_logData[0]), 10);\n                        }\n                    break;\n\n                    case \"oCaeNas1Home15PerformanceChart\":\n                        var _perfData = _logData.match(/[0-9]{2}:[0-9]{2}/g);\n                        var _awaitingTime = _perfData[0];\n                        var _usage = _perfData[1];\n\n                        window[_Gm].dataProvider.pop();\n                    break;\n                }\n            }\n            else{\n                window[_Gm].refresh(\"NaN\");\n            }\n        }\n        catch(ex){console.log(ex.message);}\n    }\n\n    function loadData(_Gm, _logName){\n        try{\n            var xhttp = new XMLHttpRequest();\n            xhttp.onreadystatechange = function() {\n                if (this.readyState == 4 && this.status == 200) {\n                    var _logData = this.responseText;\n                    setValue(_Gm, _logData);\n                }\n            }\n            xhttp.open(\"GET\", \"logs/\"+ _logName, true);\n            xhttp.send();\n        }\n        catch(ex){console.log(ex.message);}\n    }\n\n    function updateGm(){\n        try{\n            loadData(\"oCaeAdm1FreeNodesGm\", \"cae_adm1_check_free_nodes.htm\");\n            loadData(\"oCaeNas1Home15UsageGm\", \"cae_nas1_check_home15.htm\");\n            loadData(\"oCaeNas1Home15AwaitingTimeGm\", \"cae_nas1_check_home15.htm\");\n            loadData(\"oCaeNas1Home15PerformanceChart\", \"cae_nas1_check_home15.htm\");\n            //oCaeNas1Home15PerformanceChart.validateData();\n            $(\"a[title='JavaScript charts']\").hide();\n        }\n        catch(ex){console.log(ex.message);}\n    }\n\n    //setInterval(function(){updateGm();}, 3000);\n}\n\n\ncatch(ex){console.log(ex.message);}",
+			"file": "js/nagiosdb.js",
+			"file_size": 9444,
+			"file_write_time": 131583687720000000,
 			"settings":
 			{
-				"buffer_size": 44,
+				"buffer_size": 9767,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "try{\n    //Gauge meters objects\n    var oCaeAdm1FreeNodesGm;\n    var oCaeNas1Home15UsageGm;\n    var oCaeNas1Home15AwaitingTimeGm;\n\n    //Chart objects\n    var oCaeNas1Home15PerformanceChart;\n\n    //Data providers\n    var oHome15PerformanceData = new Array();\n\n    //Some basic colors\n    var _green = \"#a9d70b\";\n    var _yellow =\"#f9c802\";\n    var _red = \"#ff0000\";\n\n    //Default options for gauge meters\n    var dfltOpts = {\n        min: 0,\n        pointer: true,\n        pointerOptions: {\n            value: 0,\n            toplength: -15,\n            bottomlength: 10,\n            bottomwidth: 12,\n            color: '#8e8e93',\n            stroke: '#ffffff',\n            stroke_width: 3,\n            stroke_linecap: 'round'\n        },\n        gaugeWidthScale: 0.8,\n        counter: false\n    }\n\n    function initializeHome15Chart(_dataLog, iTimeInterval){\n        try{\n            var _initialData;\n            var xhttp = new XMLHttpRequest();\n            xhttp.onreadystatechange = function() {\n                if (this.readyState == 4 && this.status == 200) {\n                    initialData = this.response;\n                }\n            }\n            xhttp.open(\"GET\", \"logs/cae_nas1_check_home15.htm\", true);\n            xhttp.send();\n            debugger;\n            var oDate = moment();\n            oDataProvider.unshift({\n                \"usage\": \"\",\n                \"awaiting-time\": \"\",\n                \"time\": oDate.format(\"HH:mm\")\n            });\n            for (i=0;i<8;i++){\n                ;\n                oDataProvider.unshift({\n                    \"usage\": \"\",\n                    \"awaiting-time\": \"\",\n                    \"time\": oDate.subtract(1,\"minute\").format(\"HH:mm\")\n                });\n            }\n            \n        }\n        catch(ex){console.log(ex.message);}\n    }\n        \n    function parseData(oData, oWidget){\n        try{\n            var oParsedData = new Array();\n            switch(_dataLog){\n                case \"\":\n                    oParsedData.push({\n                        \"freeNodes\": String(_dataLog.match(/[0-9]+/g)[0]),\n                        \"totalNodes\": String(_dataLog.match(/[0-9]+/g)[1]),\n                        \"time\": String(_dataLog.match(/[0-9]{2}:[0-9]{2}/)),\n                        \"statusCode\": String(_logData.match(/OK|Unknown|not defined/))\n                    });\n                break;\n                case \"\":\n                    oParsedData.push({\n                        \"usage\": String(_dataLog.match(/[0-9]+\\.[0-9]{2}/g)),\n                        \"awaiting-time\": String(_dataLog.match(/[0-9]+\\.[0-9]{2}/g)),\n                        \"time\": String(_logData.match(/[0-9]{2}:[0-9]{2}/)),\n                        \"statusCode\": String(_logData.match(/OK|Unknown|not defined/))\n                    });\n                break;\n            }\n            return oParsedData;\n        }\n        catch(ex){console.log(ex.message);}\n    }\n\n    function setValue(_widget, _logData){\n        try\n        {\n            if (_logData.match(/Error|Unknown|not defined/i)===null)\n            {\n                switch(_widget)\n                {\n                    case \"oCaeAdm1FreeNodesGm\":\n                        _logData = _logData.match(/[0-9]+/g);\n                        iFreeNodes = _logData[0];\n                        iTotalNodes = _logData[1];\n                    \n                        window[_widget].refresh(iFreeNodes, iTotalNodes);\n                    break;\n\n                    case \"oCaeNas1Home15UsageGm\":\n                        _logData =_logData.match(/[0-9]+\\.[0-9]{2}/g);\n                        window[_widget].refresh(parseFloat(_logData[1]));\n                    break;\n\n                    case \"oCaeNas1Home15AwaitingTimeGm\":\n                        _logData =_logData.match(/[0-9]+\\.[0-9]{2}/g);\n                        if(parseFloat(_logData)>10){\n                            window[_widget].refresh(parseFloat(_logData[0]), Math.floor(parseFloat(_logData)+1));\n                        }\n                        else{\n                            window[_widget].refresh(parseFloat(_logData[0]), 10);\n                        }\n                    break;\n\n                    case \"oCaeNas1Home15PerformanceChart\":\n                        var _perfData = _logData.match(/[0-9]+\\.[0-9]{2}/g);\n                        var _awaitingTime = _perfData[0];\n                        var _usage = _perfData[1];\n                        var _time = _logData.match(/[0-9]{2}:[0-9]{2}/);\n\n                        window[_widget].dataProvider.push(\n                        {\n                            \"usage\": _usage,\n                            \"awaiting-time\": _awaitingTime,\n                            \"time\": _time\n                        });\n                        window[_widget].validateData();\n                        $(\"a[title='JavaScript charts']\").hide();\n                    break;\n                }\n            }\n            else{\n                window[_widget].refresh(\"NaN\");\n            }\n        }\n        catch(ex){console.log(ex.message);}\n    }\n\n    function loadData(_widget, _logName){\n        try{\n            var xhttp = new XMLHttpRequest();\n            xhttp.onreadystatechange = function() {\n                if (this.readyState == 4 && this.status == 200) {\n                    var _logData = this.responseText;\n                    setValue(_widget, _logData);\n                }\n            }\n            xhttp.open(\"GET\", \"logs/\"+ _logName, true);\n            xhttp.send();\n        }\n        catch(ex){console.log(ex.message);}\n    }\n\n    function update(){\n        try{\n            loadData(\"oCaeAdm1FreeNodesGm\", \"cae_adm1_check_free_nodes.htm\");\n            loadData(\"oCaeNas1Home15UsageGm\", \"cae_nas1_check_home15.htm\");\n            loadData(\"oCaeNas1Home15AwaitingTimeGm\", \"cae_nas1_check_home15.htm\");\n            loadData(\"oCaeNas1Home15PerformanceChart\", \"cae_nas1_check_home15.htm\");\n            //oCaeNas1Home15PerformanceChart.validateData();\n            $(\"a[title='JavaScript charts']\").hide();\n        }\n        catch(ex){console.log(ex.message);}\n    }\n    \n    function start(){\n        setInterval(function(){update();}, 1000*60);\n    }\n\n    $(document).ready(function(){\n        try{\n            oCaeAdm1FreeNodesGm = new JustGage({\n                id: 'cae-adm1-check-free-nodes-gm',\n                name :'oCaeAdm1freeNodesGm',\n                title: 'free nodes',\n                max: 90,\n                decimals: 0,\n                customSectors: [{\n                    color : _red,\n                    lo : 0,\n                    hi : 5\n                },{\n                    color : _yellow,\n                    lo : 6,\n                    hi : 10\n                },{\n                    color : _green,\n                    lo : 11,\n                    hi : 200\n                }],\n                defaults: dfltOpts\n            });\n\n            oCaeNas1Home15UsageGm = new JustGage({\n                id: 'cae-nas1-check-home15-usage-gm',\n                title: 'home15 usage',\n                max: 100,\n                symbol: '%',\n                decimals: 2,\n                customSectors: [{\n                    color : _green,\n                    lo : 0.00,\n                    hi : 98.99\n                  },{\n                    color : _yellow,\n                    lo : 99.00,\n                    hi : 99.99\n                  },{\n                    color : _red,\n                    lo : 100.00,\n                    hi : 100.00\n                  }],\n                  defaults: dfltOpts\n            });\n\n            oCaeNas1Home15AwaitingTimeGm = new JustGage({\n                id: 'cae-nas1-check-home15-awaiting-time-gm',\n                title: 'home15 awaiting time',\n                max: 10,\n                symbol: ' ms',\n                decimals: 2,\n                customSectors: [{\n                    color : _green,\n                    lo : 0.00,\n                    hi : 5.99\n                  },{\n                    color : _red,\n                    lo : 5.99,\n                    hi : 10.00\n                  }], \n                  defaults: dfltOpts\n              });\n\n            oCaeNas1Home15PerformanceChart = AmCharts.makeChart(\"cae-nas1-home15-performance-chart\",{\n                \"type\": \"serial\",\n                \"categoryField\": \"time\",\n                \"columnSpacing\": 4,\n                \"autoDisplay\": true,\n                \"dataDateFormat\": \"HH:NN\",\n                \"plotAreaFillAlphas\": 0.23,\n                \"colors\": [\n                    \"#88E537\",\n                    \"#70A5BF\"\n                ],\n                \"precision\": 2,\n                \"categoryAxis\": {\n                    \"minPeriod\": \"mm\",\n                    \"parseDates\": true,\n                    \"boldLabels\": true,\n                },\n                \"graphs\": [\n                    {\n                        \"bullet\": \"round\",\n                        \"bulletSize\": 10,\n                        \"id\": \"usage-graph\",\n                        \"lineThickness\": 2,\n                        \"title\": \"Usage\",\n                        \"valueAxis\": \"usage-axis\",\n                        \"valueField\": \"usage\",\n                        \"yAxis\": \"usage-axis\"\n                    },\n                    {\n                        \"bullet\": \"round\",\n                        \"bulletSize\": 10,\n                        \"id\": \"awaiting-time-graph\",\n                        \"lineThickness\": 2,\n                        \"title\": \"Awaiting time\",\n                        \"valueAxis\": \"awaiting-time-axis\",\n                        \"valueField\": \"awaiting-time\",\n                        \"yAxis\": \"awaiting-time-axis\"\n                    }\n                ],\n                \"valueAxes\": [\n                    {\n                        \"id\": \"usage-axis\",\n                        \"autoGridCount\": false,\n                        \"tickLength\": 3,\n                        \"title\": \"Usage\",\n                        \"titleFontSize\": 13,\n                        \"strictMinMax\": true,\n                        \"integersOnly\": true,\n                        \"unit\":\"%\",\n                        \"labelFrequency\": 2,\n                        \"gridCount\": 10\n\n                    },\n                    {\n                        \"id\": \"awaiting-time-axis\",\n                        \"position\": \"right\",\n                        \"title\": \"Awaiting time (ms)\",\n                        \"titleFontSize\": 13\n                    }\n                ],\n                \"balloon\": {\n                    \"animationDuration\": 0\n                },\n                \"legend\": {\n                    \"enabled\": true,\n                    \"useGraphSettings\": true,\n                    \"switchable\": false\n                },\n                \"titles\": [\n                    {\n                        \"id\": \"hom15-performance\",\n                        \"size\": 15,\n                        \"text\": \"home15 performance\"\n                    }\n                ],\n                \"dataProvider\": oHome15PerformanceData\n            });\n            oCaeNas1Home15PerformanceChart.validateData();\n            $(\"a[title='JavaScript charts']\").hide();\n            start();\n\n        }\n        catch(ex){console.log(ex.message);}\n    }); \n}\ncatch(ex){console.log(ex.message);}",
+			"file": "js/nagiosdb-0.1.js",
+			"file_size": 11631,
+			"file_write_time": 131583678860000000,
+			"settings":
+			{
+				"buffer_size": 11248,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/E/Instalación/MACs.txt",
+			"settings":
+			{
+				"buffer_size": 227,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		}
@@ -240,9 +248,21 @@
 	"command_palette":
 	{
 		"height": 392.0,
-		"last_filter": "package",
+		"last_filter": "pac ins",
 		"selected_items":
 		[
+			[
+				"pac ins",
+				"Package Control: Install Package"
+			],
+			[
+				"pac ",
+				"Package Control: Remove Package"
+			],
+			[
+				" pack li",
+				"Package Control: List Packages"
+			],
 			[
 				"package",
 				"Package Control: Install Package"
@@ -420,7 +440,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 420.0
+		"width": 412.0
 	},
 	"console":
 	{
@@ -451,6 +471,10 @@
 	],
 	"file_history":
 	[
+		"/C/Users/Public/Desktop/R@1n.txt",
+		"/E/Programas/Sublime Text/Data/Packages/View In Browser/View In Browser.sublime-settings",
+		"/E/Programas/Sublime Text/Data/Packages/User/View In Browser.sublime-settings",
+		"/E/Programas/Sublime Text/Data/Packages/Package Control/Package Control.sublime-settings",
 		"/C/CAE/Sublime Text/Data/Packages/User/View In Browser.sublime-settings",
 		"/C/inetpub/wwwroot/nagiosdashboard/nagiosdashboard.sublime-project",
 		"/C/CAE/Sublime Text/Data/Packages/User/Git.sublime-settings",
@@ -574,15 +598,11 @@
 		"/Z/Orphaned/Nueva carpeta/RMGL/Nueva carpeta (2)/20170629_130402352_res_res.3gp_snapshot_05.02_[2017.06.30_00.33.15]2_REPORT.txt",
 		"/Z/f3/Z/The Seven-Inch Itch/Nueva carpeta/Nueva carpeta/puta gorda/Nueva carpeta/4757983 (2)_res_REPORT.txt",
 		"/F/TEMP/7zO8291F923/Nuevo documento de texto.txt",
-		"/C/Users/Juako/Documents/Assetto Corsa/cfg/controllers/presets/Fanatec Porsche GT3 RS Wheel 900 + CS Pedals.ini",
-		"/E/Programas/Sublime Text/Data/Packages/User/Preferences.sublime-settings",
-		"/C/Users/Juako/Desktop/SyMenu/README.TXT",
-		"/E/Programas/Sublime Text/Data/Packages/Default/Preferences.sublime-settings",
-		"/C/Users/Juako/Desktop/Disable_Drivers_in_Windows_Update.reg"
+		"/C/Users/Juako/Documents/Assetto Corsa/cfg/controllers/presets/Fanatec Porsche GT3 RS Wheel 900 + CS Pedals.ini"
 	],
 	"find":
 	{
-		"height": 30.0
+		"height": 28.0
 	},
 	"find_in_files":
 	{
@@ -596,6 +616,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"-",
 			"exe"
 		],
 		"highlight": true,
@@ -604,6 +625,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			":"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -614,7 +636,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -630,8 +652,8 @@
 						"selection":
 						[
 							[
-								877,
-								877
+								0,
+								0
 							]
 						],
 						"settings":
@@ -644,60 +666,30 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 267,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								267,
-								267
-							]
-						],
-						"settings":
-						{
-							"auto_indent": false,
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"tab_width": 2,
-							"word_wrap": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
 		},
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
-					"buffer": 2,
+					"buffer": 1,
 					"file": "js/nagiosdb.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9742,
+						"buffer_size": 9767,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5947,
-								5947
+								6419,
+								6419
 							]
 						],
 						"settings":
@@ -707,38 +699,68 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3960.0,
+						"translation.y": 3745.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "logs/cae_nas1_check_home15.htm",
-					"semi_transient": true,
+					"buffer": 2,
+					"file": "js/nagiosdb-0.1.js",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 44,
+						"buffer_size": 11248,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								44,
-								0
+								31,
+								31
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax"
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3480.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/E/Instalación/MACs.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 227,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								28,
+								28
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -746,7 +768,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 30.0
+		"height": 28.0
 	},
 	"input":
 	{
@@ -772,7 +794,7 @@
 		"cols":
 		[
 			0.0,
-			0.356129410032,
+			0.170374710801,
 			1.0
 		],
 		"rows":
@@ -810,7 +832,7 @@
 	"project": "nagiosdashboard.sublime-project",
 	"replace":
 	{
-		"height": 56.0
+		"height": 52.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -840,7 +862,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 0,
+	"selected_group": 1,
 	"settings":
 	{
 	},
